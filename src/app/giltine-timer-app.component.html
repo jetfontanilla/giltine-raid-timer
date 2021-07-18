@@ -1,6 +1,12 @@
 <div class="header">
-  <span [class.active]="getMode() == 'giltine'" (click)="setMode('giltine')">Giltine</span>
-  <span [class.active]="getMode() == 'abataras'" (click)="setMode('abataras')">Abataras</span>
+  <span class="control giltine"
+        [class.active]="getMode() == 'giltine'"
+        (click)="setMode('giltine')"
+  >Giltine</span>
+  <span class="control abataras"
+        [class.active]="getMode() == 'abataras'"
+        (click)="setMode('abataras')"
+  >Abataras</span>
 </div>
 
 <div class="timer" *ngIf="getTimerTick()">
@@ -13,8 +19,11 @@
   <div class="time">{{getTimerTick()?.timeString || "CONDENSATION!"}}</div>
 </div>
 
-<button *ngIf="isPaused()" (click)="resume()">Start</button>
-<button *ngIf="!isPaused()" (click)="pause()">Pause</button>
-<button (click)="reset()">Reset</button>
-<button (click)="stun5()">Stun (5s)</button>
-<button (click)="stun15()">Stun (15s)</button>
+<div class="controls">
+  <span class="control" *ngIf="isPaused()" (click)="resume()">Start</span>
+  <span class="control" *ngIf="!isPaused()" (click)="pause()">Pause</span>
+  <span class="control" (click)="reset()">Reset</span>
+  <span class="control" (click)="stun5()">Stun (5s)</span>
+  <span class="control" (click)="stun15()">Stun (15s)</span>
+</div>
+

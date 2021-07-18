@@ -38,3 +38,35 @@
   -webkit-text-stroke-width: 3px;
   -webkit-text-stroke-color: #000;
 }
+
+.header, .controls {
+  display: flex;
+  justify-content: center;
+}
+
+.control {
+  margin: 0.2em;
+  padding: 0.2em 0;
+  font-size: 0.8em;
+  text-align: center;
+  text-outline: 0.2em #333;
+  -webkit-text-fill-color: #fff;
+  -webkit-text-stroke-width: 2px;
+  -webkit-text-stroke-color: #333;
+  cursor: pointer;
+  background-color: #eee;
+  border: 0.1em #333 solid;
+  border-radius: 0.2em;
+  min-width: 15%;
+  &:hover {
+    background-color: lemonchiffon;
+  }
+  &.active {
+    &.giltine {
+      background-color: maroon;
+    }
+    &.abataras {
+      background-color: darkviolet;
+    }
+  }
+}
