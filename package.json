@@ -5,6 +5,7 @@
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
+    "build:github": "ng build --prod --output-path docs --base-href /giltine-raid-timer/",
     "watch": "ng build --watch --configuration development",
     "test": "ng test"
   },
