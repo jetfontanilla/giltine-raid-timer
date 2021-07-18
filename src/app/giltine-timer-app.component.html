@@ -1,0 +1,8 @@
+{{getMode()}}
+<button *ngIf="isPaused()" (click)="resume()">Start</button>
+<button *ngIf="!isPaused()" (click)="pause()">Pause</button>
+<button (click)="reset()">Reset</button>
+<div *ngIf="getTimerTick()">
+  <div>{{getTimerTick()?.percent}}</div>
+  <div>{{getTimerTick()?.timeString}}</div>
+</div>

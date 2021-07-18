@@ -1,7 +1,6 @@
-import { interval, Observable, Subject } from "rxjs";
-import { finalize, map, startWith, switchMap, takeUntil, takeWhile } from "rxjs/operators";
+import { concat, interval, mergeMap, NEVER, Observable, of, Subject } from "rxjs";
+import { finalize, map, startWith, switchMap, takeUntil, takeWhile, tap } from "rxjs/operators";
 import { format } from "date-fns";
-import { NEVER } from "rxjs/src/internal/observable/never";
 
 export interface CountdownTimerTick {
   time: number;
@@ -18,21 +17,37 @@ export class CountdownTimer {
   private timer$: Observable<CountdownTimerTick>;
   private active$ = new Subject<boolean>();
 
+  private paused: boolean = false;
+
   constructor(private durationMs: number = 0,
               private autoStart: boolean = false,
               private intervalMs: number = 100,
-              private format: string = "mm:ss.SSS") {
-    let baseTimer$ = this.generateTimer$(this.intervalMs);
-    this.timer$ = this.active$.pipe(
-      startWith(autoStart),
+              private format: string = "ss.SSS") {
+    this.remainingTimeMs = this.durationMs;
+    this.remainingTime = this.computeRemainingTimeString(this.remainingTimeMs);
+    this.timer$ = concat(of({
+      time: this.remainingTimeMs,
+      timeString: this.remainingTime,
+      isExpired: this.remainingTimeMs <= 0 || this.isExpired(),
+      percent: this.durationMs > 0 ? this.remainingTimeMs / this.durationMs : 0
+    }), this.generateTimer$());
+  }
+
+  private generateTimer$(): Observable<CountdownTimerTick> {
+    let baseTimer$ = this.generateIntervalTimer$(this.intervalMs);
+    return this.active$.pipe(
+      startWith(this.autoStart),
+      tap(x => console.log(x)),
+      tap(isActive => this.paused = !isActive),
       switchMap(isActive => isActive ? baseTimer$ : NEVER),
+      tap(x => console.log(x)),
       takeUntil(this.onDestroy$),
-      takeWhile(timerTick => timerTick.time >= 0),
+      takeWhile(timerTick => timerTick?.time >= 0),
       finalize(() => this.complete())
     );
   }
 
-  private generateTimer$(intervalMs: number): Observable<CountdownTimerTick> {
+  private generateIntervalTimer$(intervalMs: number): Observable<CountdownTimerTick> {
     return interval(intervalMs)
       .pipe(
         takeUntil(this.onDestroy$),
@@ -46,7 +61,7 @@ export class CountdownTimer {
 
           return {
             time: this.remainingTimeMs,
-            timeString: this.getRemainingTime(),
+            timeString: this.remainingTime,
             isExpired: this.remainingTimeMs <= 0 || this.isExpired(),
             percent: this.durationMs > 0 ? this.remainingTimeMs / this.durationMs : 0
           };
@@ -56,10 +71,6 @@ export class CountdownTimer {
 
   private isComplete(): boolean {
     return this.remainingTimeMs < this.intervalMs;
-  }
-
-  reset(): void {
-    this.remainingTimeMs = this.durationMs;
   }
 
   complete(): void {
@@ -78,6 +89,10 @@ export class CountdownTimer {
       return;
     }
     this.active$.next(false);
+  }
+
+  isPaused(): boolean {
+    return this.paused;
   }
 
   resume(): void {
