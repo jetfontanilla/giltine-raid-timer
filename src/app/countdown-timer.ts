@@ -1,5 +1,5 @@
-import { concat, interval, mergeMap, NEVER, Observable, of, Subject } from "rxjs";
-import { finalize, map, startWith, switchMap, takeUntil, takeWhile, tap } from "rxjs/operators";
+import { concat, interval, NEVER, Observable, of, Subject } from "rxjs";
+import { map, startWith, switchMap, takeUntil, takeWhile, tap } from "rxjs/operators";
 import { format } from "date-fns";
 
 export interface CountdownTimerTick {
@@ -21,7 +21,7 @@ export class CountdownTimer {
 
   constructor(private durationMs: number = 0,
               private autoStart: boolean = false,
-              private intervalMs: number = 100,
+              private intervalMs: number = 25,
               private format: string = "ss.SSS") {
     this.remainingTimeMs = this.durationMs;
     this.remainingTime = this.computeRemainingTimeString(this.remainingTimeMs);
@@ -37,13 +37,10 @@ export class CountdownTimer {
     let baseTimer$ = this.generateIntervalTimer$(this.intervalMs);
     return this.active$.pipe(
       startWith(this.autoStart),
-      tap(x => console.log(x)),
       tap(isActive => this.paused = !isActive),
       switchMap(isActive => isActive ? baseTimer$ : NEVER),
-      tap(x => console.log(x)),
       takeUntil(this.onDestroy$),
-      takeWhile(timerTick => timerTick?.time >= 0),
-      finalize(() => this.complete())
+      takeWhile(timerTick => timerTick?.time >= 0)
     );
   }
 
@@ -54,11 +51,6 @@ export class CountdownTimer {
         map(() => {
           this.remainingTimeMs -= this.intervalMs;
           this.remainingTime = this.computeRemainingTimeString(this.remainingTimeMs);
-
-          if (this.isComplete()) {
-            this.complete();
-          }
-
           return {
             time: this.remainingTimeMs,
             timeString: this.remainingTime,
@@ -67,10 +59,6 @@ export class CountdownTimer {
           };
         })
       );
-  }
-
-  private isComplete(): boolean {
-    return this.remainingTimeMs < this.intervalMs;
   }
 
   complete(): void {

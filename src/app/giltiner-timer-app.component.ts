@@ -1,10 +1,16 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { CountdownTimer, CountdownTimerTick } from "./countdown-timer";
+import { timer } from "rxjs";
 
 const DURATION_GILTINE = 50000;
 const DURATION_ABATARAS = 45000;
 const MODE_GILTINE = 'giltine';
 const MODE_ABATARAS = 'abataras';
+
+const DURATION_LOOKUP: Record<string, number> = {
+  giltine: DURATION_GILTINE,
+  abataras: DURATION_ABATARAS
+}
 
 @Component({
   selector: 'giltine-timer-app',
@@ -28,8 +34,39 @@ export class GiltinerTimerAppComponent implements OnInit, OnDestroy {
   private initializeTimer(): void {
     this.currentTimer?.getTimer$().subscribe(timerTick => {
       this.timerTick = timerTick;
+
+      if (timerTick.time <= 0) {
+        const CONDENSE_DURATION = 1000;
+        timer(CONDENSE_DURATION).subscribe(() => {
+          this.reset();
+        });
+      }
+
       this.changeDetectorRef.markForCheck();
     });
+  }
+
+  private setTimer(timer: CountdownTimer): void {
+    this.currentTimer?.destroy();
+    this.currentTimer = timer;
+    this.initializeTimer();
+    this.changeDetectorRef.markForCheck();
+  }
+
+  stun5(): void {
+    this.setTimer(new CountdownTimer(5000, true));
+  }
+
+  stun15(): void {
+    this.setTimer(new CountdownTimer(15000, true));
+  }
+
+  setMode(mode: string): void {
+    if (mode == this.currentMode) {
+      return;
+    }
+    this.currentMode = mode;
+    this.reset();
   }
 
   getMode(): string {
@@ -38,6 +75,11 @@ export class GiltinerTimerAppComponent implements OnInit, OnDestroy {
 
   getTimerTick(): CountdownTimerTick | undefined {
     return this.timerTick;
+  }
+
+  getProgressWidth(): string {
+    const percent = this.timerTick?.percent ?? 0;
+    return (percent * 100).toString() + "%";
   }
 
   pause(): void {
@@ -55,10 +97,7 @@ export class GiltinerTimerAppComponent implements OnInit, OnDestroy {
   }
 
   reset(): void {
-    this.currentTimer?.destroy();
-    this.currentTimer = new CountdownTimer(DURATION_GILTINE, false);
-    this.initializeTimer();
-    this.changeDetectorRef.markForCheck();
+    this.setTimer(new CountdownTimer(DURATION_LOOKUP[this.currentMode], true));
   }
 
   ngOnDestroy() {

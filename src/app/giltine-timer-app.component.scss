@@ -1,0 +1,40 @@
+:host {
+  padding: 1em;
+  font-size: 3em;
+  font-family: Impact, serif;
+}
+
+.timer {
+  width: 80%;
+  margin: auto;
+  position: relative;
+  padding: 3em 0;
+}
+
+.progress-bar {
+  outline: 0.1em #000 solid;
+  box-shadow: 0.2em 0.2em #000;
+}
+
+.progress {
+  height: 1em;
+  &.giltine {
+    background-color: maroon;
+  }
+  &.abataras {
+    background-color: darkviolet;
+  }
+}
+
+.time {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 2em;
+  font-style: italic;
+  text-outline: 0.2em #000;
+  -webkit-text-fill-color: #fff;
+  -webkit-text-stroke-width: 3px;
+  -webkit-text-stroke-color: #000;
+}
