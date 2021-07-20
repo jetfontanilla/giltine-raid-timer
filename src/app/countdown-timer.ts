@@ -12,6 +12,7 @@ export interface CountdownTimerTick {
 export class CountdownTimer {
   private remainingTime: string = "";
   private remainingTimeMs: number = 0;
+  private endTime: number = 0;
 
   private onDestroy$ = new Subject<void>();
   private timer$: Observable<CountdownTimerTick>;
@@ -23,12 +24,13 @@ export class CountdownTimer {
               private autoStart: boolean = false,
               private intervalMs: number = 25,
               private format: string = "ss.SSS") {
+    this.endTime = Date.now() + this.durationMs;
     this.remainingTimeMs = this.durationMs;
-    this.remainingTime = this.computeRemainingTimeString(this.remainingTimeMs);
+    this.remainingTime = this.computeRemainingTimeString();
     this.timer$ = concat(of({
       time: this.remainingTimeMs,
       timeString: this.remainingTime,
-      isExpired: this.remainingTimeMs <= 0 || this.isExpired(),
+      isExpired: this.isExpired(),
       percent: this.durationMs > 0 ? this.remainingTimeMs / this.durationMs : 0
     }), this.generateTimer$());
   }
@@ -49,33 +51,31 @@ export class CountdownTimer {
       .pipe(
         takeUntil(this.onDestroy$),
         map(() => {
-          this.remainingTimeMs -= this.intervalMs;
-          this.remainingTime = this.computeRemainingTimeString(this.remainingTimeMs);
+          this.remainingTime = this.computeRemainingTimeString();
           return {
             time: this.remainingTimeMs,
             timeString: this.remainingTime,
-            isExpired: this.remainingTimeMs <= 0 || this.isExpired(),
+            isExpired: this.isExpired(),
             percent: this.durationMs > 0 ? this.remainingTimeMs / this.durationMs : 0
           };
         })
       );
   }
 
-  complete(): void {
-    this.remainingTime = this.computeRemainingTimeString(0);
-  }
-
-  private computeRemainingTimeString(remainingTimeMs: number): string {
-    if (remainingTimeMs <= 0) {
+  private computeRemainingTimeString(): string {
+    this.remainingTimeMs = this.endTime - Date.now();
+    if (this.remainingTimeMs <= 0) {
+      this.remainingTimeMs = 0;
       return "";
     }
-    return format(remainingTimeMs, this.format);
+    return format(this.remainingTimeMs, this.format);
   }
 
   pause(): void {
     if (this.isExpired()) {
       return;
     }
+    this.remainingTimeMs = this.endTime - Date.now();
     this.active$.next(false);
   }
 
@@ -87,6 +87,7 @@ export class CountdownTimer {
     if (this.isExpired()) {
       return;
     }
+    this.endTime = Date.now() + this.remainingTimeMs;
     this.active$.next(true);
   }
 
@@ -99,7 +100,7 @@ export class CountdownTimer {
   }
 
   isExpired(): boolean {
-    return this.remainingTimeMs <= 0;
+    return this.endTime <= Date.now();
   }
 
   getTimer$(): Observable<CountdownTimerTick> {

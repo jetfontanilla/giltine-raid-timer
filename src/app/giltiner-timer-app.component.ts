@@ -38,7 +38,7 @@ export class GiltinerTimerAppComponent implements OnInit, OnDestroy {
     this.currentTimer?.getTimer$().subscribe(timerTick => {
       this.timerTick = timerTick;
 
-      if (!this.muted && timerTick.time == 5000) {
+      if (!this.muted && timerTick.time <= 5000 && timerTick.time > 4500 && this.warningAudio.paused) {
         this.warningAudio.play();
       }
 
@@ -61,8 +61,8 @@ export class GiltinerTimerAppComponent implements OnInit, OnDestroy {
     this.changeDetectorRef.markForCheck();
   }
 
-  stun5(): void {
-    this.setTimer(new CountdownTimer(5000, true));
+  stun55(): void {
+    this.setTimer(new CountdownTimer(55000, true));
   }
 
   stun15(): void {
