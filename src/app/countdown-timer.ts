@@ -1,4 +1,4 @@
-import { concat, interval, NEVER, Observable, of, Subject } from "rxjs";
+import { concat, distinctUntilChanged, interval, NEVER, Observable, of, Subject } from "rxjs";
 import { map, startWith, switchMap, takeUntil, takeWhile, tap } from "rxjs/operators";
 import { format } from "date-fns";
 
@@ -42,7 +42,8 @@ export class CountdownTimer {
       tap(isActive => this.paused = !isActive),
       switchMap(isActive => isActive ? baseTimer$ : NEVER),
       takeUntil(this.onDestroy$),
-      takeWhile(timerTick => timerTick?.time >= 0)
+      takeWhile(timerTick => timerTick?.time >= 0),
+      distinctUntilChanged()
     );
   }
 
