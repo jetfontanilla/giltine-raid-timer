@@ -40,7 +40,7 @@
   min-width: 3em;
 }
 
-.header, .controls {
+.header, .controls, .custom-timer {
   display: flex;
   justify-content: center;
 }
@@ -76,5 +76,37 @@
     min-height: 1.5em;
     position: absolute;
     left: 1em;
+  }
+}
+
+.custom-timer {
+  margin-top: 1em;
+}
+
+.custom-timer-input {
+  position: absolute;
+  left: 1em;
+  text-align: center;
+  border: 1px #333 solid;
+  padding: 0.5em;
+  border-radius: 0.5em;
+}
+
+.timer-input {
+  font-size: 1em;
+  width: 2em;
+  text-align: right;
+}
+
+.text-info {
+  display: inline-block;
+  cursor: pointer;
+  border: 1px #333 solid;
+  font-size: 0.4em;
+  background-color: #eee;
+  padding: 0.4em 0.8em;
+  border-radius: 0.5em;
+  &:hover {
+    background-color: lemonchiffon;
   }
 }

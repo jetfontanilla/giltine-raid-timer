@@ -29,3 +29,16 @@
   <span class="control" (click)="stun15()">15s timer</span>
 </div>
 
+<span class="custom-timer-input">
+  <div>
+    <input #timerInput type="number" class="timer-input" min="1" max="99" size="2" placeholder="0"/> s
+  </div>
+  <span (click)="addTimer(timerInput.value)" class="text-info">Add Custom Timer</span>
+</span>
+
+<div class="custom-timer">
+  <ng-template ngFor let-timer [ngForOf]="getCustomeTimers()" let-i="index">
+    <span *ngIf="timer" class="control" (click)="startTimer(timer)">{{timer}}s timer</span>
+  </ng-template>
+</div>
+

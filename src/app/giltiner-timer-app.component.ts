@@ -26,6 +26,8 @@ export class GiltinerTimerAppComponent implements OnInit, OnDestroy {
   private muted: boolean = false;
   private warningAudio = new Audio("assets/countdown.mp3");
 
+  private customTimers: (number | undefined)[] = [];
+
   constructor(private changeDetectorRef: ChangeDetectorRef) {
   }
 
@@ -62,11 +64,26 @@ export class GiltinerTimerAppComponent implements OnInit, OnDestroy {
   }
 
   stun55(): void {
-    this.setTimer(new CountdownTimer(55000, true));
+    this.startTimer(55);
   }
 
   stun15(): void {
-    this.setTimer(new CountdownTimer(15000, true));
+    this.startTimer(15);
+  }
+
+  addTimer(seconds: string) {
+    if (!seconds) {
+      return;
+    }
+    this.customTimers.push(parseInt(seconds));
+  }
+
+  getCustomeTimers(): (number | undefined)[] {
+    return this.customTimers;
+  }
+
+  startTimer(seconds: number): void {
+    this.setTimer(new CountdownTimer(seconds * 1000, true));
   }
 
   setMode(mode: string): void {
