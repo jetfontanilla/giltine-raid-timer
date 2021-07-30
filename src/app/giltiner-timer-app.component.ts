@@ -23,7 +23,7 @@ export class GiltinerTimerAppComponent implements OnInit, OnDestroy {
   private currentMode = MODE_GILTINE;
   private timerTick?: CountdownTimerTick;
 
-  private muted: boolean = false;
+  private muted: boolean = true;
   private warningAudio = new Audio("assets/countdown.mp3");
 
   private customTimers: (number | undefined)[] = [];
@@ -45,6 +45,7 @@ export class GiltinerTimerAppComponent implements OnInit, OnDestroy {
       }
 
       if (timerTick.time <= 0) {
+        this.currentTimer?.pause();
         const CONDENSE_DURATION = 1000;
         timer(CONDENSE_DURATION).subscribe(() => {
           this.reset();
