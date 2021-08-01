@@ -21,7 +21,7 @@
   &.giltine {
     background-color: maroon;
   }
-  &.abataras {
+  &.abataras45, &.abataras55 {
     background-color: darkviolet;
   }
 }
@@ -46,21 +46,19 @@
 }
 
 .control {
+  font-family: Verdana, sans-serif;
   margin: 0.2em;
   padding: 0.2em 0;
-  font-size: 0.8em;
+  font-size: 0.6em;
   text-align: center;
-  text-outline: 0.2em #333;
-  -webkit-text-fill-color: #fff;
-  -webkit-text-stroke-width: 2px;
-  -webkit-text-stroke-color: #333;
+  color: #fff;
   cursor: pointer;
-  background-color: #eee;
+  background-color: #aaa;
   border: 0.1em #333 solid;
   border-radius: 0.2em;
   min-width: 15%;
   &:hover {
-    background-color: lemonchiffon;
+    background-color: #ccc;
   }
   &.active {
     &.giltine {

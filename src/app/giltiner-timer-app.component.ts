@@ -3,13 +3,15 @@ import { CountdownTimer, CountdownTimerTick } from "./countdown-timer";
 import { timer } from "rxjs";
 
 const DURATION_GILTINE = 50000;
-const DURATION_ABATARAS = 45000;
+const DURATION_ABATARAS_45 = 45000;
+const DURATION_ABATARAS_55 = 55000;
 const MODE_GILTINE = 'giltine';
 const MODE_ABATARAS = 'abataras';
 
 const DURATION_LOOKUP: Record<string, number> = {
   giltine: DURATION_GILTINE,
-  abataras: DURATION_ABATARAS
+  abataras45: DURATION_ABATARAS_45,
+  abataras55: DURATION_ABATARAS_55
 }
 
 @Component({
@@ -46,7 +48,7 @@ export class GiltinerTimerAppComponent implements OnInit, OnDestroy {
 
       if (timerTick.time <= 0) {
         this.currentTimer?.pause();
-        const CONDENSE_DURATION = 1000;
+        const CONDENSE_DURATION = 400;
         timer(CONDENSE_DURATION).subscribe(() => {
           this.reset();
         });
@@ -62,14 +64,6 @@ export class GiltinerTimerAppComponent implements OnInit, OnDestroy {
     this.currentTimer = timer;
     this.initializeTimer();
     this.changeDetectorRef.markForCheck();
-  }
-
-  stun55(): void {
-    this.startTimer(55);
-  }
-
-  stun15(): void {
-    this.startTimer(15);
   }
 
   addTimer(seconds: string) {
