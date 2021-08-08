@@ -1,6 +1,7 @@
+<span *ngIf="isMuted()" (click)="toggleMute()" class="control volume">🔈</span>
+<span *ngIf="!isMuted()" (click)="toggleMute()" class="control volume">🔇</span>
+
 <div class="header">
-  <span *ngIf="isMuted()" (click)="toggleMute()" class="control volume">🔈</span>
-  <span *ngIf="!isMuted()" (click)="toggleMute()" class="control volume">🔇</span>
   <span class="control giltine"
         [class.active]="getMode() == 'giltine'"
         (click)="setMode('giltine')"

@@ -1,7 +1,17 @@
 :host {
-  padding: 1em;
+  padding: 2em 1em;
   font-size: 3em;
-  font-family: Impact, serif;
+  font-family: Impact, Verdana, Arial, sans-serif;
+
+  @media screen and (max-width: 768px) {
+    font-size: 2em;
+  }
+}
+
+.header {
+  @media screen and (max-width: 768px) {
+    margin-top: 2em;
+  }
 }
 
 .timer {
@@ -73,6 +83,7 @@
     min-width: 2em;
     min-height: 1.5em;
     position: absolute;
+    top: 1em;
     left: 1em;
   }
 }
@@ -88,6 +99,10 @@
   border: 1px #333 solid;
   padding: 0.5em;
   border-radius: 0.5em;
+  @media screen and (max-width: 768px) {
+    font-size: 0.8em;
+    margin-top: 2em;
+  }
 }
 
 .timer-input {
@@ -108,3 +123,5 @@
     background-color: lemonchiffon;
   }
 }
+
+
